@@ -169,11 +169,11 @@ class MainAppViewModel(
         }
     }
 
-    fun signUp(email: String, password: String, fullName: String, phone: String, role: UserRole) {
+    fun signUp(email: String, password: String, fullName: String, phone: String) {
         viewModelScope.launch {
             _isBusy.value = true
-            repository.signUp(email, password, fullName, phone, role)
-                .onSuccess { emitMessage("Đăng ký thành công tài khoản ${it.fullName}!") }
+            repository.signUp(email, password, fullName, phone)
+                .onSuccess { emitMessage("Đăng ký thành công tài khoản Khách hàng ${it.fullName}!") }
                 .onFailure { emitMessage(it.message ?: "Đăng ký thất bại.") }
             _isBusy.value = false
         }

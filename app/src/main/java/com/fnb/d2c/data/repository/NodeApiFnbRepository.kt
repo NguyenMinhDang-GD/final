@@ -299,8 +299,7 @@ class NodeApiFnbRepository(
         email: String,
         password: String,
         fullName: String,
-        phone: String,
-        role: UserRole
+        phone: String
     ): Result<UserProfile> {
         return try {
             val resEl = requestJson(
@@ -311,7 +310,6 @@ class NodeApiFnbRepository(
                     put("password", password)
                     put("full_name", fullName.trim())
                     put("phone", phone.trim())
-                    put("role", role.name)
                 }
             )
             val authRes = json.decodeFromJsonElement<AuthResponse>(resEl)
@@ -322,7 +320,7 @@ class NodeApiFnbRepository(
             Result.success(authRes.user)
         } catch (io: IOException) {
             isServerOnline = false
-            offlineFallback.signUp(email, password, fullName, phone, role).also { syncFromOfflineFallback() }
+            offlineFallback.signUp(email, password, fullName, phone).also { syncFromOfflineFallback() }
         } catch (e: Exception) {
             Result.failure(e)
         }

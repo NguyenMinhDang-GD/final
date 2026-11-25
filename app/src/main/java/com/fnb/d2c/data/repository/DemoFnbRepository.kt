@@ -113,8 +113,7 @@ class DemoFnbRepository(
         email: String,
         password: String,
         fullName: String,
-        phone: String,
-        role: UserRole
+        phone: String
     ): Result<UserProfile> = mutex.withLock {
         val key = email.trim().lowercase()
         if (key.isBlank() || password.length < 6) {
@@ -128,8 +127,8 @@ class DemoFnbRepository(
             email = key,
             fullName = fullName.ifBlank { key.substringBefore("@") },
             phone = phone.ifBlank { "0909000111" },
-            role = role,
-            walletBalance = if (role == UserRole.CUSTOMER) 500_000L else 0L
+            role = UserRole.CUSTOMER,
+            walletBalance = 500_000L
         )
         accounts[key] = password to profile
         _currentUser.value = profile

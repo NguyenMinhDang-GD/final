@@ -24,7 +24,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -59,7 +58,7 @@ fun AuthScreen(
     backendModeLabel: String,
     isBusy: Boolean,
     onSignIn: (String, String) -> Unit,
-    onSignUp: (String, String, String, String, UserRole) -> Unit,
+    onSignUp: (String, String, String, String) -> Unit,
     onQuickDemoRole: (UserRole) -> Unit
 ) {
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -67,7 +66,6 @@ fun AuthScreen(
     var password by remember { mutableStateOf("123456") }
     var fullName by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
-    var registerRole by remember { mutableStateOf(UserRole.CUSTOMER) }
 
     Column(
         modifier = Modifier
@@ -141,13 +139,27 @@ fun AuthScreen(
                         Tab(
                             selected = selectedTab == 1,
                             onClick = { selectedTab = 1 },
-                            text = { Text("Đăng ký mới") }
+                            text = { Text("Đăng ký Khách hàng") }
                         )
                     }
 
                     Spacer(Modifier.height(16.dp))
 
                     if (selectedTab == 1) {
+                        Surface(
+                            color = HerbGreen.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "🎁 Tài khoản Khách hàng mới được tặng sẵn 500.000đ vào Ví thử nghiệm để đặt món.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = HerbGreen,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(10.dp)
+                            )
+                        }
+                        Spacer(Modifier.height(10.dp))
                         OutlinedTextField(
                             value = fullName,
                             onValueChange = { fullName = it },
@@ -164,23 +176,6 @@ fun AuthScreen(
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth()
                         )
-                        Spacer(Modifier.height(10.dp))
-                        Text(
-                            text = "Vai trò tài khoản:",
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            FilterChip(
-                                selected = registerRole == UserRole.CUSTOMER,
-                                onClick = { registerRole = UserRole.CUSTOMER },
-                                label = { Text("Khách hàng (Tặng Ví 500k)") }
-                            )
-                            FilterChip(
-                                selected = registerRole == UserRole.MERCHANT,
-                                onClick = { registerRole = UserRole.MERCHANT },
-                                label = { Text("Chủ quán / Bếp") }
-                            )
-                        }
                         Spacer(Modifier.height(10.dp))
                     }
 
@@ -208,7 +203,7 @@ fun AuthScreen(
                             if (selectedTab == 0) {
                                 onSignIn(email, password)
                             } else {
-                                onSignUp(email, password, fullName, phone, registerRole)
+                                onSignUp(email, password, fullName, phone)
                             }
                         },
                         enabled = !isBusy,

@@ -7,13 +7,14 @@ const { formatUser } = require("../utils/serializers");
 function createAuthRouter(db) {
   const router = express.Router();
 
-  // POST /api/auth/register
+  // POST /api/auth/register (Public registration strictly creates CUSTOMER accounts;
+  // MERCHANT account is pre-provisioned in DB to prevent privilege escalation)
   router.post("/register", (req, res) => {
     const email = String(req.body.email || "").trim().toLowerCase();
     const password = String(req.body.password || "");
     const fullName = String(req.body.full_name || req.body.fullName || "").trim();
     const phone = String(req.body.phone || "").trim();
-    const role = req.body.role === "MERCHANT" ? "MERCHANT" : "CUSTOMER";
+    const role = "CUSTOMER";
 
     if (!email || !email.includes("@") || password.length < 6) {
       return res.status(400).json({ error: "Email không hợp lệ hoặc mật khẩu dưới 6 ký tự." });

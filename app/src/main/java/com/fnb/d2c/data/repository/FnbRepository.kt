@@ -36,8 +36,7 @@ interface FnbRepository {
         email: String,
         password: String,
         fullName: String,
-        phone: String,
-        role: UserRole
+        phone: String
     ): Result<UserProfile>
     suspend fun quickSwitchDemoRole(role: UserRole): Result<UserProfile>
     suspend fun signOut()

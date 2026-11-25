@@ -47,7 +47,20 @@ test("Node.js Server E2E: Bootstrap, JWT Auth, Voucher Cap, Wallet Deduction & R
     assert.equal(boot.json.menuItems.length, 6);
     assert.equal(boot.json.vouchers.length, 3);
 
-    // 2. Login Customer & Merchant via JWT
+    // 2. Public registration ALWAYS creates CUSTOMER (even if client sends role: MERCHANT)
+    const regAttempt = await apiJson(srv.baseUrl, "/api/auth/register", {
+      method: "POST",
+      body: {
+        email: "newuser@coba.vn",
+        password: "123456",
+        full_name: "Khách Mới",
+        role: "MERCHANT"
+      }
+    });
+    assert.equal(regAttempt.status, 201);
+    assert.equal(regAttempt.json.user.role, "CUSTOMER");
+
+    // 3. Login Customer & Merchant via JWT
     const custLogin = await apiJson(srv.baseUrl, "/api/auth/login", {
       method: "POST",
       body: { email: "khach@coba.vn", password: "123456" }
